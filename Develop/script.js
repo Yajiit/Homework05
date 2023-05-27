@@ -1,7 +1,58 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
+// $(function ENSURES CODE DOESN'T RUN UNTIL BROWSER HAS FINISHED RENDERING HTML 
 $(function () {
+  // Selects id="planner" Element from HTML
+  const WorkdayPlanner = $("#planner");
+  // Gets/formats current date
+  const currentDate = dayjs().format("YYYY-MM-DD");
+  // Calls the generateHourlyPlanner function with the current date properly formatted
+  const plannerHTML = generateHourlyPlanner(currentDate);
+  // Display the planner to the "planner" Element in HTML
+  WorkdayPlanner.html(plannerHTML);
+});
+
+function generateHourlyPlanner(date) {
+  // Ensures planner element is empty string
+  let plannerHTML = "";
+  // Gets current hour
+  const hourCurrent = dayjs().hour();
+  // Set the start and end hours for the planner
+  const hourStart = 0;
+  const hourEnd = 23;
+  // for loop adds one for each hour from startHour to endHour
+  for (let hour = hourStart; hour <= hourEnd; hour++) {
+    // uses dayjs to grab each hour and format it into 12 hour AM/PM
+    const time = dayjs(date).hour(hour);
+    const formattedTime = time.format("h A");
+    
+    // Assign past/present/future class to CSS style based on comparison to hourCurrent
+    let cssTimingColor = "";
+    if (hour < hourCurrent) {
+      cssTimingColor = "past";
+    } else if (hour === hourCurrent) {
+      cssTimingColor = "present";
+    } else {
+      cssTimingColor = "future";
+    }
+
+    // Creates HTML structure for each hour block
+    const hourBlock = `
+      <div id="hour-${hour}" class="row time-block ${cssTimingColor}">
+        <div class="col-2 col-md-1 hour text-center py-3">${formattedTime}</div>
+        <textarea class="col-8 col-md-10 description" rows="3"></textarea>
+        <button class="btn saveBtn col-2 col-md-1" aria-label="save">
+          <i class="fas fa-save" aria-hidden="true"></i>
+        </button>
+      </div>
+    `;
+
+// appends each hour block to variable to be added to planner element in HTML
+    plannerHTML += hourBlock;
+  }
+// resolves for loop returning all hourblocks to HTML element
+  return plannerHTML;
+}
+
+// $(function () {
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
   // local storage. HINT: What does `this` reference in the click listener
@@ -20,4 +71,4 @@ $(function () {
   // attribute of each time-block be used to do this?
   //
   // TODO: Add code to display the current date in the header of the page.
-});
+// });
