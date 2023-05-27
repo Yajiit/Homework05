@@ -43,8 +43,8 @@ function generateHourlyPlanner(date) {
   const hourCurrent = dayjs().hour();
   const currentDate = dayjs().startOf('day');
   // Set the start and end hours for the planner
-  const hourStart = 0;
-  const hourEnd = 23;
+  const hourStart = 9;
+  const hourEnd = 17;
     // check if the date is past/future
     const isPastDate = date.isBefore(currentDate, 'day');
     const isFutureDate = date.isAfter(currentDate, 'day');
