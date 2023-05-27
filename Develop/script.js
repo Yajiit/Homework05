@@ -23,7 +23,6 @@ function generateHourlyPlanner(date) {
     // uses dayjs to grab each hour and format it into 12 hour AM/PM
     const time = dayjs(date).hour(hour);
     const formattedTime = time.format("h A");
-    
     // Assign past/present/future class to CSS style based on comparison to hourCurrent
     let cssTimingColor = "";
     if (hour < hourCurrent) {
@@ -36,21 +35,43 @@ function generateHourlyPlanner(date) {
 
     // Creates HTML structure for each hour block
     const hourBlock = `
-      <div id="hour-${hour}" class="row time-block ${cssTimingColor}">
-        <div class="col-2 col-md-1 hour text-center py-3">${formattedTime}</div>
-        <textarea class="col-8 col-md-10 description" rows="3"></textarea>
-        <button class="btn saveBtn col-2 col-md-1" aria-label="save">
-          <i class="fas fa-save" aria-hidden="true"></i>
-        </button>
-      </div>
+    <div id="hour-${hour}" class="row time-block ${cssTimingColor}">
+    <div class="col-2 col-md-1 hour text-center py-3">${formattedTime}</div>
+    <textarea id="textarea-${hour}" class="col-8 col-md-10 description" rows="3"></textarea>
+    <button id="saveBtn-${hour}" class="btn saveBtn col-2 col-md-1" aria-label="save">
+      <i class="fas fa-save" aria-hidden="true"></i>
+    </button>
+  </div>
     `;
 
 // appends each hour block to variable to be added to planner element in HTML
     plannerHTML += hourBlock;
   }
-// resolves for loop returning all hourblocks to HTML element
-  return plannerHTML;
+
+  // append the planner HTML to the DOM
+  const WorkdayPlanner = $("#planner");
+  WorkdayPlanner.html(plannerHTML);
+  // for loop to affect each hour's save button/loaded textarea content
+  for (let hour = hourStart; hour <= hourEnd; hour++) {
+    // adds event listeners to save buttons
+    const saveBtn = $(`#saveBtn-${hour}`);
+    saveBtn.on("click", function () {
+      // grabs content from textarea
+      const textarea = $(`#textarea-${hour}`);
+      const text = textarea.val();
+      // saves that content to local storage
+      localStorage.setItem(`hour-${hour}`, text);
+    });
+    
+      // loads textarea content from local storage
+    const text = localStorage.getItem(`hour-${hour}`);
+    const textarea = $(`#textarea-${hour}`);
+    // puts stored content into corresponding textarea
+    textarea.val(text);
+  }
 }
+
+
 
 // $(function () {
   // TODO: Add a listener for click events on the save button. This code should
