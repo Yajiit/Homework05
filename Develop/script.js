@@ -1,23 +1,39 @@
-// $(function ENSURES CODE DOESN'T RUN UNTIL BROWSER HAS FINISHED RENDERING HTML 
 $(function () {
-  // Selects id="planner" Element from HTML
-  const WorkdayPlanner = $("#planner");
-  // Gets/formats current date
-  const currentDate = dayjs().format("YYYY-MM-DD");
-  // Calls the generateHourlyPlanner function with the current date properly formatted
-  const plannerHTML = generateHourlyPlanner(currentDate);
-  // Display the planner to the "planner" Element in HTML
-  WorkdayPlanner.html(plannerHTML);
-// selects "currentDay" element in the HTML
   const currentDayElement = $("#currentDay");
-// function to display the date in header of page
+  const prevDayButton = $("#prevDayButton");
+  const nextDayButton = $("#nextDayButton");
+
+  let currentDate = dayjs();
+
   function updateCurrentDate() {
-    // formats to Month/Day/Year
-    const currentDate = dayjs().format("MMMM D, YYYY");
-    // puts content into currentDate element
-    currentDayElement.text(currentDate);
+    // puts currentDate into Month/Day/Year Format
+    const formattedDate = currentDate.format("MMMM D, YYYY");
+    // sets header to selected day
+    currentDayElement.text(formattedDate);
   }
+
+  // goes back one day
+  function goToPreviousDay() {
+    currentDate = currentDate.subtract(1, "day");
+    updateCurrentDate();
+    updatePlannerForDate(currentDate);
+  }
+  
+  // goes forward one day
+  function goToNextDay() {
+    currentDate = currentDate.add(1, "day");
+    updateCurrentDate();
+    updatePlannerForDate(currentDate);
+  }
+
+  // Update current date
   updateCurrentDate();
+
+  // Set click event listeners for the previous and next day buttons
+  prevDayButton.on("click", goToPreviousDay);
+  nextDayButton.on("click", goToNextDay);
+
+  generateHourlyPlanner(currentDate);
 });
 
 function generateHourlyPlanner(date) {
@@ -33,7 +49,7 @@ function generateHourlyPlanner(date) {
     // uses dayjs to grab each hour and format it into 12 hour AM/PM
     const time = dayjs(date).hour(hour);
     const formattedTime = time.format("h A");
-    const timeBlockId = `hour-${date}-${hour}`;
+    const timeBlockId = `hour-${dayjs(date).format("YYYY-MM-DD")}-${hour}`;
     // Assign past/present/future class to CSS style based on comparison to hourCurrent
     let cssTimingColor = "";
     if (hour < hourCurrent) {
@@ -64,7 +80,7 @@ function generateHourlyPlanner(date) {
   WorkdayPlanner.html(plannerHTML);
   // for loop to affect each hour's save button/loaded textarea content
   for (let hour = hourStart; hour <= hourEnd; hour++) {
-    const timeBlockId = `hour-${date}-${hour}`;
+    const timeBlockId = `hour-${date.format("YYYY-MM-DD")}-${hour}`;
     // adds event listeners to save buttons
     const saveBtn = $(`#saveBtn-${timeBlockId}`);
     saveBtn.on("click", function () {
@@ -82,6 +98,10 @@ function generateHourlyPlanner(date) {
     textarea.val(text);
   }
 }
+// function for updating textcontent on date switches
+function updatePlannerForDate(date) {
+  generateHourlyPlanner(date);
+  }
 
 
 
