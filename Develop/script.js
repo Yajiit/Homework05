@@ -8,6 +8,16 @@ $(function () {
   const plannerHTML = generateHourlyPlanner(currentDate);
   // Display the planner to the "planner" Element in HTML
   WorkdayPlanner.html(plannerHTML);
+// selects "currentDay" element in the HTML
+  const currentDayElement = $("#currentDay");
+// function to display the date in header of page
+  function updateCurrentDate() {
+    // formats to Month/Day/Year
+    const currentDate = dayjs().format("MMMM D, YYYY");
+    // puts content into currentDate element
+    currentDayElement.text(currentDate);
+  }
+  updateCurrentDate();
 });
 
 function generateHourlyPlanner(date) {
@@ -23,6 +33,7 @@ function generateHourlyPlanner(date) {
     // uses dayjs to grab each hour and format it into 12 hour AM/PM
     const time = dayjs(date).hour(hour);
     const formattedTime = time.format("h A");
+    const timeBlockId = `hour-${date}-${hour}`;
     // Assign past/present/future class to CSS style based on comparison to hourCurrent
     let cssTimingColor = "";
     if (hour < hourCurrent) {
@@ -35,10 +46,10 @@ function generateHourlyPlanner(date) {
 
     // Creates HTML structure for each hour block
     const hourBlock = `
-    <div id="hour-${hour}" class="row time-block ${cssTimingColor}">
+    <div id="${timeBlockId}" class="row time-block ${cssTimingColor}">
     <div class="col-2 col-md-1 hour text-center py-3">${formattedTime}</div>
-    <textarea id="textarea-${hour}" class="col-8 col-md-10 description" rows="3"></textarea>
-    <button id="saveBtn-${hour}" class="btn saveBtn col-2 col-md-1" aria-label="save">
+    <textarea id="textarea-${timeBlockId}" class="col-8 col-md-10 description" rows="3"></textarea>
+    <button id="saveBtn-${timeBlockId}" class="btn saveBtn col-2 col-md-1" aria-label="save">
       <i class="fas fa-save" aria-hidden="true"></i>
     </button>
   </div>
@@ -53,19 +64,20 @@ function generateHourlyPlanner(date) {
   WorkdayPlanner.html(plannerHTML);
   // for loop to affect each hour's save button/loaded textarea content
   for (let hour = hourStart; hour <= hourEnd; hour++) {
+    const timeBlockId = `hour-${date}-${hour}`;
     // adds event listeners to save buttons
-    const saveBtn = $(`#saveBtn-${hour}`);
+    const saveBtn = $(`#saveBtn-${timeBlockId}`);
     saveBtn.on("click", function () {
       // grabs content from textarea
-      const textarea = $(`#textarea-${hour}`);
+      const textarea = $(`#textarea-${timeBlockId}`);
       const text = textarea.val();
       // saves that content to local storage
-      localStorage.setItem(`hour-${hour}`, text);
+      localStorage.setItem(`hour-${timeBlockId}`, text);
     });
     
       // loads textarea content from local storage
-    const text = localStorage.getItem(`hour-${hour}`);
-    const textarea = $(`#textarea-${hour}`);
+    const text = localStorage.getItem(`hour-${timeBlockId}`);
+    const textarea = $(`#textarea-${timeBlockId}`);
     // puts stored content into corresponding textarea
     textarea.val(text);
   }
