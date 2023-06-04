@@ -1,18 +1,23 @@
-# HOMEWORK 05  WORKDAY SCHEDULER
-Bootcamp homework for week 5 - Workday Scheduler
+# WORKDAY SCHEDULER
+
 
 
 ## DESCRIPTION
 
-This is an app to schedule workdays from 9am to 5pm. It saves the schedule locally.
+This is an app to schedule workdays from 9am to 5pm. It saves each hour block locally.  The date is at the top of the page along with buttons to switch between days.
 
 
 ## USAGE
 
 [Link to Planner Page](https://yajiit.github.io/Homework05--Workday-Planner/)
+The date appears at the top of the scheduler. Type in the plans for an hour block then click on the corresponding blue button to save into local storage.  To switch dates click the "Previous Day" or "Next Day" button beside the current date.  The displayed date will change, along with the schedule for that day.  To return to the current date at any time, simply refresh the page.
 
 
 ## FEATURES
+
+- Saves individual hour blocks across multiple dates
+- Color coded hour blocks based on past, present, or future
+- Ability to cycle through dates
 
 
 ## SCREENSHOT
